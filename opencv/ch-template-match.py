@@ -104,16 +104,28 @@ def firstRun():
 
 rootdir='d:/20181205錱俞提供/01國文/卷1'
 templatefile='opencv/data/ch10-15.png'
+templatefile='opencv/data/template-2.jpg'
 template = getCvImage(templatefile,0)
 method = eval(methods[1])
-
+print(template.shape)
+w=template.shape[1]
+h=template.shape[0]
+count=11
+output=np.zeros((h*count,w),dtype=np.uint8)
+i=0
 def secondRun(rootdir):
+    global i
     for f in os.listdir(rootdir):
         fn=os.path.join(rootdir,f)
         if os.path.isfile(fn) and (fn.endswith(".png") or fn.endswith(".jpg")):
             try:
                 img=getCvImage(fn,0)
-                print(f,perfomeMatch(img,template,method))
+                res=perfomeMatch(img,template,method)
+                print(f,res)
+                if i<count:
+                    output[i*h:(i*h+h),0:w]=img[res[0][1]:(res[0][1]+h),res[0][0]:(res[0][0]+w)]
+                i=i+1
+
             except:
                 print(f, sys.exc_info()[0], "*******************")
         if os.path.isdir(fn):
@@ -121,3 +133,4 @@ def secondRun(rootdir):
 
 
 secondRun(rootdir)
+cv.imwrite("opencv/data/output.jpg",output)

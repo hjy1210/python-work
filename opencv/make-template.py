@@ -37,9 +37,9 @@ def click_and_crop(event, x, y, flags, param):
 	# (x, y) coordinates and indicate that cropping is being
 	# performed
 	if event == cv2.EVENT_LBUTTONDOWN:
-		if flags==9:
+		if flags==9:  # ctrl + leftbuttondown
 			status="cropping"
-		elif flags==1:
+		elif flags==1: # pure leftbuttondown
 			status="moving"
 		else:
 			status="normal"
@@ -121,7 +121,6 @@ while True:
 	# display the image and wait for a keypress
 	cv2.imshow("image", img)
 	key = cv2.waitKey(1) & 0xFF
-
 	# if the 'r' key is pressed, reset the cropping region
 	if key == ord("r"):
 		img = curImage.copy()
@@ -142,6 +141,12 @@ h=int(r*curImage.shape[0])
 img=cv2.resize(curImage,(width,h))
 cv2.imshow("image", img)
 cv2.waitKey(0)
+i=0
+for roi in rois:
+	i=i+1
+	tmpimg=image[roi[0][1]:roi[1][1],roi[0][0]:roi[1][0]]
+	name= "opencv/data/template-{}.jpg".format(i)
+	cv2.imwrite(name,tmpimg)
 
 # close all open windows
 cv2.destroyAllWindows()
