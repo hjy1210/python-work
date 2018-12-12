@@ -73,3 +73,9 @@ window.Move
 * lines.py Math
 * ruler.py ClientToScreen, Move, Cursor
 * star.py clipping
+
+# WxPython
+要了解 wxPython， 源頭在 [Welcome to the wxPyWiki](https://wiki.wxpython.org/FrontPage)，
+* 先看其中的 [Getting started with wxPython](https://wiki.wxpython.org/Getting%20Started)
+* 再看 [wxPython tutorial](http://zetcode.com/wxpython/)
+* [Index of /wxPython4/extras/4.0.3](https://extras.wxpython.org/wxPython4/extras/4.0.3/) 裡面有wxPython-demo-4.0.3.tar.gz，解壓縮後在demo子目錄裡面執行 `python main.py` 可以看到 wxPython 的各種示範
