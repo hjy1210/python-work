@@ -52,7 +52,7 @@ class MainWindow(wx.Frame):
         
         # menuOpen = filemenu.Append(wx.ID_OPEN, "&Open"," Open file")
         menuOpen = wx.MenuItem(filemenu,wx.ID_OPEN,"&Open"," Open an existing image file")
-        menuOpen.SetBitmap(wx.Bitmap("opencv/bitmaps/fileopen.png"))
+        menuOpen.SetBitmap(wx.Bitmap("opencv/bitmaps/fileopen.png"))  ##### must SetBitmap before append to menu
         filemenu.Append(menuOpen)
 
         menuExit = filemenu.Append(wx.ID_EXIT,"E&xit"," Terminate the program")
