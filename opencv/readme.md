@@ -79,3 +79,31 @@ window.Move
 * 先看其中的 [Getting started with wxPython](https://wiki.wxpython.org/Getting%20Started)
 * 再看 [wxPython tutorial](http://zetcode.com/wxpython/)
 * [Index of /wxPython4/extras/4.0.3](https://extras.wxpython.org/wxPython4/extras/4.0.3/) 裡面有wxPython-demo-4.0.3.tar.gz，解壓縮後在demo子目錄裡面執行 `python main.py` 可以看到 wxPython 的各種示範
+
+# [dlib](http://dlib.net/)
+dlib 是一個 C++ 函數庫，它有許多機器學習功能，威力強大，可以用 Python 呼叫。
+
+它的功能包括人臉辨識、臉部特徵定位、Support Vector Machine,,,,等等。
+
+##  dlib 的安裝
+這個[網頁](http://dlib.net/compile.html)上說
+  ```
+  Note that you need to have CMake and a working C++ compiler installed for this to work.
+  ```
+所以
+* 安裝 Visual Studio 2017 community edition，選取 C++, Python 功能
+* 用 [cmake-3.13.1-win64-x64.msi](https://cmake.org/download/) 安裝 Cmake，並設定路徑包括 CMake\bin 
+* 在 Visual Studio 2017 中的 Python 環境用 pip install dlib 來安裝 dlib
+
+## dlib 的 image 格式
+dlib 的 image 格式與 opencv 相同，讀取中文路徑的圖檔也與opencv一樣會有問題，可透過 Pillow 來讀取，再轉換成 opencv/dlib格式。
+```
+from PIL import Image
+# 用 Pillow 讀檔
+img = Image.open(fn)
+# 轉成 opencv 格式
+img = np.array(img_clip)
+# 轉成 Pil 格式
+img = Image.fromarray(img)
+
+```

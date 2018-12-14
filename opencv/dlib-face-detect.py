@@ -18,7 +18,7 @@
 #   is fairly general and capable of detecting many types of semi-rigid objects
 #   in addition to human faces.  Therefore, if you are interested in making
 #   your own object detectors then read the train_object_detector.py example
-#   program.  
+#   program.
 #
 #
 # COMPILING/INSTALLING THE DLIB PYTHON INTERFACE
@@ -39,15 +39,49 @@
 #       pip install numpy
 
 import sys
-
+import os
 import dlib
+from PIL import Image, ExifTags
+import numpy as np
 
 detector = dlib.get_frontal_face_detector()
 win = dlib.image_window()
+rootdir = "d:/downloads/errorposition中文/raw"
+#rootdir = "d:/tmp"
+#rootdir = "d:/20181205錱俞提供/01國文/卷1"
+dic_exif = {
+    1: 0,
+    8: 90,
+    3: 180,
+    6: -90
+}
 
-for f in sys.argv[1:]:
-    print("Processing file: {}".format(f))
-    img = dlib.load_rgb_image(f)
+for filename in os.listdir(rootdir):  # sys.argv[1:]:
+    if not filename.lower().endswith(".jpg"):
+        continue
+
+    fn = os.path.join(rootdir, filename)
+    print("Processing file: {}".format(fn))
+    img = Image.open(fn)
+    try:
+        exif = {
+            ExifTags.TAGS[k]: v
+            for k, v in img._getexif().items()
+            if k in ExifTags.TAGS
+        }
+    except:
+        exif = {
+            'Orientation': 1
+        }
+    degree = dic_exif[exif['Orientation']]
+    # 圖片選轉 ， expand 要設定 (不然旋轉後會有黑邊)
+    img_clip = img.rotate(degree, expand=1)
+    # 轉換成 opencv image
+    img = np.array(img_clip) 
+    # Convert RGB to BGR 
+    #img = img[:, :, ::-1].copy() 
+
+    img = dlib.resize_image(img, scale=1024/img.shape[1])
     # The 1 in the second argument indicates that we should upsample the image
     # 1 time.  This will make everything bigger and allow us to detect more
     # faces.
