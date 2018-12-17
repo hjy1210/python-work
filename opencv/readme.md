@@ -107,3 +107,7 @@ img = np.array(img_clip)
 img = Image.fromarray(img)
 
 ```
+# opencv 與 dlib 在人臉辨識上的比較
+[Face Detection – OpenCV, Dlib and Deep Learning ( C++ / Python )](https://www.learnopencv.com/face-detection-opencv-dlib-and-deep-learning-c-python/) 對 OpenCV 與 Dlib 在人臉辨識功能方面做了詳細的比較，考慮速度、準度、左瞧、右看、低頭、抬頭、遠近、部分遮蔽等性質。有一個47秒的[影片](https://www.youtube.com/watch?time_continue=2&v=kKaU6JFRu5g)，充分展示比較的結果。
+
+若要收集正面照片，對左瞧、右看、低頭、抬頭的相片能夠辨識反而是缺點，所以似應採用 openCV/Haar 方法並使用辨識率較佳的 lbpcascade_frontalface_improved.xml 模型。
