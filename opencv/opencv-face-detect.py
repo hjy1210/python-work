@@ -11,8 +11,8 @@ from matplotlib import pyplot as plt
 其二，它可以擷取照片是否旋轉的訊息，將照片轉正。
 這兩者都是 opencv 所沒有的功能。
 """
-rootdir = "d:/downloads/errorposition中文/raw"
-#rootdir = "d:/tmp"
+#rootdir = "d:/downloads/errorposition中文/raw"
+rootdir = "d:/downloads/test_sat"
 #rootdir = "d:/20181205錱俞提供/01國文/卷1"
 dic_exif = {
     1: 0,
@@ -40,7 +40,13 @@ for filename in os.listdir(rootdir):  # sys.argv[1:]:
         exif = {
             'Orientation': 1
         }
-    degree = dic_exif[exif['Orientation']]
+    if not 'Orientation' in exif.keys():
+        exif['Orientation']=1
+    try:
+        degree = dic_exif[exif['Orientation']]
+    except:
+        degree = 0
+        print(exif['Orientation'])
     # 圖片選轉 ， expand 要設定 (不然旋轉後會有黑邊)
     if not degree==0:
         img = img.rotate(degree, expand=1)

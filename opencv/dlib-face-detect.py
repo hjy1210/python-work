@@ -46,8 +46,8 @@ import numpy as np
 
 detector = dlib.get_frontal_face_detector()
 win = dlib.image_window()
-rootdir = "d:/downloads/errorposition中文/raw"
-#rootdir = "d:/tmp"
+#rootdir = "d:/downloads/errorposition中文/raw"
+rootdir = "d:/downloads/test_sat"
 #rootdir = "d:/20181205錱俞提供/01國文/卷1"
 dic_exif = {
     1: 0,
@@ -73,6 +73,8 @@ for filename in os.listdir(rootdir):  # sys.argv[1:]:
         exif = {
             'Orientation': 1
         }
+    if not 'Orientation' in exif.keys():
+        exif['Orientation']=1
     degree = dic_exif[exif['Orientation']]
     # 圖片選轉 ， expand 要設定 (不然旋轉後會有黑邊)
     img_clip = img.rotate(degree, expand=1)
