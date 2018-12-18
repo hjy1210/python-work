@@ -111,3 +111,15 @@ img = Image.fromarray(img)
 [Face Detection – OpenCV, Dlib and Deep Learning ( C++ / Python )](https://www.learnopencv.com/face-detection-opencv-dlib-and-deep-learning-c-python/) 對 OpenCV 與 Dlib 在人臉辨識功能方面做了詳細的比較，考慮速度、準度、左瞧、右看、低頭、抬頭、遠近、部分遮蔽等性質。有一個47秒的[影片](https://www.youtube.com/watch?time_continue=2&v=kKaU6JFRu5g)，充分展示比較的結果。
 
 若要收集正面照片，對左瞧、右看、低頭、抬頭的相片能夠辨識反而是缺點，所以似應採用 openCV/Haar 方法並使用辨識率較佳的 lbpcascade_frontalface_improved.xml 模型。
+
+# demo
+## Step1
+用make-template.py 製作模板所需的ROI
+* ctrl+leftbuttondown -> cropping -> 拖拉出 ROI，連續做可以得到 ROI 列
+* leftbuttondown -> moving -> 滑鼠移動產生移動圖形的功能
+* 'c' -> 展示結果 -> `<any-key>` -> 離開，同時產生template-*.jpg
+## step2
+ch-template-match.py 選定一個資料夾，採用 cv.TM_CCOEFF_NORMED 方法，以 ch10-15.png/template-*.jpg 為模板，對目錄夾裡面每一個 .png/.jpg 檔案進行定位，列出定位位置與信度，必要時顯示圖形，同時將定位出來的部分合併成opencv/data/output.jpg。
+注意：十個圖形中，定位出來的位置高低相差可達10pixels，一個劃記的高度約為11個pixels而已。
+
+

@@ -86,11 +86,12 @@ def perfomeMatch(img,template,method,display=False):
         top_left = max_loc
         value = max_val
     bottom_right = (top_left[0] + w, top_left[1] + h)
-    cv.rectangle(img,top_left, bottom_right, 0, 2)
     if display:
+        img2=img.copy()
+        cv.rectangle(img2,top_left, bottom_right, 0, 2)
         plt.subplot(121),plt.imshow(res,cmap = 'gray')
         plt.title('Matching Result'), plt.xticks([]), plt.yticks([])
-        plt.subplot(122),plt.imshow(img,cmap = 'gray')
+        plt.subplot(122),plt.imshow(img2,cmap = 'gray')
         plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
         #plt.suptitle(str(method))
         plt.show()
@@ -103,8 +104,8 @@ def firstRun():
             print(match(fn,'opencv/ch10-15.png',False))
 
 rootdir='d:/20181205錱俞提供/01國文/卷1'
-templatefile='opencv/data/ch10-15.png'
-templatefile='opencv/data/template-2.jpg'
+#templatefile='opencv/data/ch10-15.png'
+templatefile='opencv/data/template-3.jpg'
 template = getCvImage(templatefile,0)
 method = eval(methods[1])
 print(template.shape)
@@ -113,14 +114,14 @@ h=template.shape[0]
 count=11
 output=np.zeros((h*count,w),dtype=np.uint8)
 i=0
-def secondRun(rootdir):
+def secondRun(rootdir,display):
     global i
     for f in os.listdir(rootdir):
         fn=os.path.join(rootdir,f)
         if os.path.isfile(fn) and (fn.endswith(".png") or fn.endswith(".jpg")):
             try:
                 img=getCvImage(fn,0)
-                res=perfomeMatch(img,template,method)
+                res=perfomeMatch(img,template,method,display)
                 print(f,res)
                 if i<count:
                     output[i*h:(i*h+h),0:w]=img[res[0][1]:(res[0][1]+h),res[0][0]:(res[0][0]+w)]
@@ -129,8 +130,7 @@ def secondRun(rootdir):
             except:
                 print(f, sys.exc_info()[0], "*******************")
         if os.path.isdir(fn):
-            secondRun(fn)
+            secondRun(fn,display)
 
-
-secondRun(rootdir)
+secondRun(rootdir, False)
 cv.imwrite("opencv/data/output.jpg",output)

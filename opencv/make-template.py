@@ -7,8 +7,8 @@ import cv2
 refPt = []
 
 status="normal"
-width=800
-height=600
+width=1920
+height=768
 imageW=0
 imageH=0
 top=0
@@ -139,7 +139,7 @@ while True:
 r=width/curImage.shape[1]
 h=int(r*curImage.shape[0])
 img=cv2.resize(curImage,(width,h))
-cv2.imshow("image", img)
+cv2.imshow("image", curImage)
 cv2.waitKey(0)
 i=0
 for roi in rois:
