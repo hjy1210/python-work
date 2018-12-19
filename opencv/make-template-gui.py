@@ -1,20 +1,40 @@
 import os
 import wx
+import json
 
 class MyScrolledCanvas(wx.ScrolledCanvas):
     def __init__(self, parent):
         wx.ScrolledCanvas.__init__(self, parent)
+        self.cursor = wx.Cursor(wx.CROSS_CURSOR)
+        self.SetCursor(self.cursor)
+        self.Bind(wx.EVT_MOTION,self.OnMotion,self)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftButtonDown, self)
+        self.template=[]
         self.image=None
         self.bitmap=None
         self.SetScrollRate(20, 30)
+
+    def OnMotion(self,evt):
+        u,v=evt.x,evt.y
+        x,y=self.CalcUnscrolledPosition(u,v)
+        self.GetParent().statusBar.SetStatusText("x={},y={}".format(x,y),1)
+
 
     def OnPaint(self, evt):
         dc = wx.PaintDC(self)
         self.PrepareDC(dc)
         if not self.bitmap is None:
             dc.DrawBitmap(self.bitmap, 0, 0)
+            for v in self.template:
+                dc.SetBrush(wx.Brush("white",style=wx.BRUSHSTYLE_TRANSPARENT))
+                dc.SetPen(wx.Pen("red"))
+                dc.DrawRectangle(v["lt"][0],v["lt"][1],v["rb"][0]-v["lt"][0],v["rb"][1]-v["lt"][1])
+                if "children" in v.keys():
+                    for child in v["children"]:
+                        if child["type"]=="rectangle":
+                            dc.SetPen(wx.Pen("blue"))
+                            dc.DrawRectangle(child["lt"][0],child["lt"][1],child["rb"][0]-child["lt"][0],child["rb"][1]-child["lt"][1])
     def loadImage(self,file):
         self.image = wx.Image(file, wx.BITMAP_TYPE_ANY)
         self.arrangeImage()
@@ -35,8 +55,10 @@ class MainWindow(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title, size=(800,600))
 
+        self.statusBar=self.CreateStatusBar(2) # A StatusBar with two field in the bottom of the window
+        self.SetStatusBar(self.statusBar)
 
-        self.CreateStatusBar() # A StatusBar in the bottom of the window
+        #self.CreateStatusBar() 
 
         toolbar = self.CreateToolBar()
         oTool = toolbar.AddTool(wx.ID_ANY, '&Open', wx.Bitmap('opencv/bitmaps/fileopen.png'), "Open an existing image file")
@@ -73,7 +95,10 @@ class MainWindow(wx.Frame):
         self.controlSizer=wx.BoxSizer(wx.VERTICAL)
         self.photoPath = wx.TextCtrl(self)
         self.photoPath.SetEditable(False)
+        self.btnLoadTemplate = wx.Button(self,wx.ID_ANY,"載入模板")
+        self.Bind(wx.EVT_BUTTON, self.OnLoadTemplate)
         self.controlSizer.Add(self.photoPath,0,wx.EXPAND)
+        self.controlSizer.Add(self.btnLoadTemplate,0,wx.EXPAND)
 
 
         # Set mainSizer
@@ -84,6 +109,23 @@ class MainWindow(wx.Frame):
         self.SetSizerAndFit(self.mainSizer)
 
         self.Show(True)
+
+    def OnLoadTemplate(self,evt):
+        """ 
+        Browse for template file
+        """
+        wildcard = "JSON files (*.json)|*.json"
+        dialog = wx.FileDialog(None, "Choose a template file",
+                               wildcard=wildcard,
+                               style=wx.ID_OPEN)
+        if dialog.ShowModal() == wx.ID_OK:
+            with open(dialog.GetPath(), "r") as read_file:
+                self.scrolledCanvas.template=json.load(read_file)
+            self.drawTemplate()
+        dialog.Destroy() 
+
+    def drawTemplate(self):
+        self.scrolledCanvas.Refresh()
 
     def OnAbout(self,e):
         # A message dialog box with an OK button. wx.OK is a standard ID in wxWidgets.

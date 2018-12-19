@@ -10,8 +10,11 @@ extension-pkg-whitelist = wx, win32api, win32file, win32process
 class MyScrolledCanvas(wx.ScrolledCanvas):
     def __init__(self, parent):
         wx.ScrolledCanvas.__init__(self, parent)
+        self.cursor = wx.Cursor(wx.StockCursor(wx.CROSS_CURSOR))
+        self.SetCursor(self.cursor)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftButtonDown, self)
+        self.Bind(wx.EVT_MOTION,self.OnMotion,self)
         self.image=None
         self.bitmap=None
         #self.SetVirtualSize((800,600))
@@ -19,6 +22,11 @@ class MyScrolledCanvas(wx.ScrolledCanvas):
         #self.bitmap = wx.Bitmap(self.image)
         #self.SetVirtualSize((self.image.GetWidth(),self.image.GetHeight()))
         self.SetScrollRate(20, 30)
+
+    def OnMotion(self,evt):
+        u,v=evt.x,evt.y
+        x,y=self.CalcUnscrolledPosition(u,v)
+        self.GetParent().GetParent().statusBar.SetStatusText("x={},y={}".format(x,y),1)
 
     def OnPaint(self, evt):
         dc = wx.PaintDC(self)
@@ -100,6 +108,8 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, parent, title=title)
         #self.scrolledCanvas= MyScrolledCanvas(self)
         self.panel=MainPanel(self)
+        self.statusBar=self.CreateStatusBar(2)
+        self.SetStatusBar(self.statusBar)
 
 app = wx.App(False)
 frm = MyFrame(None, title='Whopper')
