@@ -41,6 +41,7 @@ class MyScrolledCanvas(wx.ScrolledCanvas):
     def arrangeImage(self):
         self.bitmap = wx.Bitmap(self.image)
         self.SetVirtualSize((self.image.GetWidth(),self.image.GetHeight()))
+        self.template=[]
         self.Refresh()
 
 
@@ -58,13 +59,10 @@ class MainWindow(wx.Frame):
         self.statusBar=self.CreateStatusBar(2) # A StatusBar with two field in the bottom of the window
         self.SetStatusBar(self.statusBar)
 
-        #self.CreateStatusBar() 
-
         toolbar = self.CreateToolBar()
         oTool = toolbar.AddTool(wx.ID_ANY, '&Open', wx.Bitmap('opencv/bitmaps/fileopen.png'), "Open an existing image file")
         toolbar.Realize()
         self.SetToolBar(toolbar)
-
 
         # Setting up the menu.
         filemenu= wx.Menu()
@@ -95,11 +93,16 @@ class MainWindow(wx.Frame):
         self.controlSizer=wx.BoxSizer(wx.VERTICAL)
         self.photoPath = wx.TextCtrl(self)
         self.photoPath.SetEditable(False)
+        self.templateSizer=wx.BoxSizer(wx.HORIZONTAL)
         self.btnLoadTemplate = wx.Button(self,wx.ID_ANY,"載入模板")
-        self.Bind(wx.EVT_BUTTON, self.OnLoadTemplate)
+        self.Bind(wx.EVT_BUTTON, self.OnLoadTemplate, self.btnLoadTemplate)
+        self.btnSaveTemplate = wx.Button(self,wx.ID_ANY,"模板存檔")
+        self.Bind(wx.EVT_BUTTON, self.OnSaveTemplate, self.btnSaveTemplate)
+        self.templateSizer.Add(self.btnLoadTemplate,0)
+        self.templateSizer.Add(self.btnSaveTemplate,0)
         self.controlSizer.Add(self.photoPath,0,wx.EXPAND)
-        self.controlSizer.Add(self.btnLoadTemplate,0,wx.EXPAND)
-
+        #self.controlSizer.Add(self.btnLoadTemplate,0,wx.EXPAND)
+        self.controlSizer.Add(self.templateSizer,0,wx.EXPAND)
 
         # Set mainSizer
         self.mainSizer=wx.BoxSizer(wx.HORIZONTAL)
@@ -109,6 +112,19 @@ class MainWindow(wx.Frame):
         self.SetSizerAndFit(self.mainSizer)
 
         self.Show(True)
+
+    def OnSaveTemplate(self,evt):
+        """
+        Create and show the Save FileDialog
+        """
+        wildcard = "JSON files (*.json)|*.json"
+        dlg = wx.FileDialog(
+            self, message="Save file as ...", 
+            defaultFile="", wildcard=wildcard, style=wx.FD_SAVE)
+        if dlg.ShowModal() == wx.ID_OK:
+            with open(dlg.GetPath(), "w") as write_file:
+                json.dump(self.scrolledCanvas.template,write_file,indent=4)
+        dlg.Destroy()
 
     def OnLoadTemplate(self,evt):
         """ 
