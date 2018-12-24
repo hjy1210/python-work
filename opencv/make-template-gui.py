@@ -35,6 +35,19 @@ class MyScrolledCanvas(wx.ScrolledCanvas):
                         if child["type"]=="rectangle":
                             dc.SetPen(wx.Pen("blue"))
                             dc.DrawRectangle(child["lt"][0],child["lt"][1],child["rb"][0]-child["lt"][0],child["rb"][1]-child["lt"][1])
+                        if child["type"]=="sequence":
+                            pen=wx.Pen("blue")
+                            pen.SetWidth(2)
+                            dc.SetPen(pen)
+                            start=child["start"]
+                            end=child["end"]
+                            stepx=(end[0]-start[0])/(child["count"]-1)
+                            stepy=(end[1]-start[1])/(child["count"]-1)
+                            for i in range(child["count"]):
+                                ltx=start[0]+int(stepx*i)-child["width"]//2
+                                lty=start[1]+int(stepy*i)-child["height"]//2
+                                dc.DrawRectangle(ltx,lty,child["width"],child["height"])
+
     def loadImage(self,file):
         self.image = wx.Image(file, wx.BITMAP_TYPE_ANY)
         self.arrangeImage()

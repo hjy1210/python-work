@@ -122,4 +122,13 @@ img = Image.fromarray(img)
 ch-template-match.py 選定一個資料夾，採用 cv.TM_CCOEFF_NORMED 方法，以 ch10-15.png/template-*.jpg 為模板，對目錄夾裡面每一個 .png/.jpg 檔案進行定位，列出定位位置與信度，必要時顯示圖形，同時將定位出來的部分合併成opencv/data/output.jpg。
 注意：十個圖形中，定位出來的位置高低相差可達10pixels，一個劃記的高度約為11個pixels而已。
 
+## step3
+先用 make-template-gui.py 手動作出 ch-template.json/ch-template-2.json，裡面有定錨矩形以及連帶的作答方塊(rectangle)與選擇列(sequence)。
+
+再用 template-match-score.py 對 ch-template.json/ch-template-2.json 裡面的選擇題讀卡。
+
+由 ch-template.json/ch-template-2.json 結果的比較，可看出原來的圖形是由兩頁的A4分別掃描再拼出來的。
+
+初步結論：定錨方塊與作答區域要越靠近越好，最低要求是必須在同一個掃描頁面裡。
+
 
