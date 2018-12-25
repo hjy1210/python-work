@@ -112,23 +112,33 @@ img = Image.fromarray(img)
 
 若要收集正面照片，對左瞧、右看、低頭、抬頭的相片能夠辨識反而是缺點，所以似應採用 openCV/Haar 方法並使用辨識率較佳的 lbpcascade_frontalface_improved.xml 模型。
 
-# demo
+# Demo
 ## Step1
 用make-template.py 製作模板所需的ROI
 * ctrl+leftbuttondown -> cropping -> 拖拉出 ROI，連續做可以得到 ROI 列
 * leftbuttondown -> moving -> 滑鼠移動產生移動圖形的功能
 * 'c' -> 展示結果 -> `<any-key>` -> 離開，同時產生template-*.jpg
-## step2
+## Step2
 ch-template-match.py 選定一個資料夾，採用 cv.TM_CCOEFF_NORMED 方法，以 ch10-15.png/template-*.jpg 為模板，對目錄夾裡面每一個 .png/.jpg 檔案進行定位，列出定位位置與信度，必要時顯示圖形，同時將定位出來的部分合併成opencv/data/output.jpg。
 注意：十個圖形中，定位出來的位置高低相差可達10pixels，一個劃記的高度約為11個pixels而已。
 
-## step3
+## Step3
+
+直接用 Windows 內建的圖檔顯示器瀏覽錱俞提供的國文卷1目錄，可以看出圖檔由兩頁拼成且影像有飄移現象。
+圖檔尺寸完全相同，疑似後端軟體的後製。
+
 先用 make-template-gui.py 手動作出 ch-template.json/ch-template-2.json，裡面有定錨矩形以及連帶的作答方塊(rectangle)與選擇列(sequence)。
 
-再用 template-match-score.py 對 ch-template.json/ch-template-2.json 裡面的選擇題讀卡。
+再用 template-match-score.py 對 ch-template.json/ch-template-2.json 裡面的非選擇題定位，選擇題定位讀卡並列印出讀卡結果。
+
+讀卡時根據secondRun的第二個參數值True/False決定是否顯示影像。
 
 由 ch-template.json/ch-template-2.json 結果的比較，可看出原來的圖形是由兩頁的A4分別掃描再拼出來的。
 
 初步結論：定錨方塊與作答區域要越靠近越好，最低要求是必須在同一個掃描頁面裡。
 
+## Step4
+* 題卷卡印刷時，是否位置、濃淡會一直保持一致。
+* 學生是否會在非作答區塗鴉、計算、打草稿，這會影響定位。
+* 雙色印刷，可以用來過濾選擇題的框框，增加讀卡的準確度。雙色印刷有別於彩色印刷。
 
